@@ -2,37 +2,24 @@ import numpy as np
 import cv2
 import sys
 
-#video_path = 'M6 Motorway Traffic.mp4'
-#cv2.ocl.setUseOpenCL(False)
-
-version = cv2.__version__.split('.')[0]
-print (version)
 
 #read video file
 cap = cv2.VideoCapture(0)
 
-#check opencv version
-if version == '2' :
-	fgbg = cv2.BackgroundSubtractorMOG2()
-if version == '3':
-	fgbg = cv2.createBackgroundSubtractorMOG2()
-
+fgbg = cv2.createBackgroundSubtractorMOG2()
 
 while (cap.isOpened):
 
 	#if ret is true than no error with cap.isOpened
 	ret, frame = cap.read()
 
-	if ret==True:
+	if ret:
 
 		#apply background substraction
 		fgmask = fgbg.apply(frame)
 
 		#check opencv version
-		if version == '2' :
-			(contours, hierarchy) = cv2.findContours(fgmask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-		if version == '3' :
-			(im2, contours, hierarchy) = cv2.findContours(fgmask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+		(im2, contours, hierarchy) = cv2.findContours(fgmask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
 		#looping for contours
 		for c in contours:
