@@ -6,9 +6,13 @@ import sys
 #read video file
 cap = cv2.VideoCapture(0)
 
+# BackgroundSubtractorMOG2
+fgbg = cv2.createBackgroundSubtractorMOG2()
+
 # BackgroundSubtractorGMG
 kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(3,3))
-fgbg= cv2.bgsegm.createBackgroundSubtractorGMG()
+
+fgbg_ = cv2.bgsegm.createBackgroundSubtractorGMG()
 
 while (cap.isOpened):
 
@@ -17,11 +21,12 @@ while (cap.isOpened):
 
 	if ret:
 		#apply background substraction
-		fgmask= fgbg.apply(frame)
+		fgmask = fgbg.apply(frame)
 		(im2, contours, hierarchy) = cv2.findContours(fgmask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
 		# BackgroundSubtractorGMG
-		fgmask= cv2.morphologyEx(fgmask, cv2.MORPH_OPEN, kernel)
+		fgmask_ = fgbg_.apply(frame)
+		fgmask_ = cv2.morphologyEx(fgmask_, cv2.MORPH_OPEN, kernel)
 
 		#looping for contours
 		for c in contours:
@@ -34,9 +39,9 @@ while (cap.isOpened):
 			#draw bounding box
 			cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-		cv2.imshow('BackgroundSubtractorGMG', fgmask)
-		cv2.imshow('Original',frame)
-
+		cv2.imshow('BackgroundSubtractorGMG', fgmask_)
+		cv2.imshow('BackgroundSubtractorMOG2',fgmask)
+		cv2.imshow('rgb',frame)
 		if cv2.waitKey(1) & 0xFF == ord("q"):
 			break
 
